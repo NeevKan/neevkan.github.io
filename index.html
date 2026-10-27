@@ -8,14 +8,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#eef1f4; --surface:#f8fafb; --ink:#1b2430; --muted:#5d6978; --line:#9aa6b4; --accent:#2f5d8a; --accent2:#e0752b; --grid:rgba(47,93,138,.09);
+  --bg:#ffffff; --surface:#f3f7fc; --ink:#0f2742; --muted:#5a6b80; --line:#c9d6e6; --accent:#1a5fb4; --accent2:#2b7bd6; --grid:rgba(26,95,180,.07);
   --head:"Archivo","Helvetica Neue",Arial,sans-serif; --body:"IBM Plex Sans","Segoe UI",Arial,sans-serif;
   box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){--bg:#27323e;--surface:#313e4c;--ink:#e6ebf0;--muted:#97a3b1;--line:#506070;--accent:#7fb0e0;--accent2:#f0944f;--grid:rgba(127,176,224,.08)}
-}
-:root[data-theme="dark"]{--bg:#27323e;--surface:#313e4c;--ink:#e6ebf0;--muted:#97a3b1;--line:#506070;--accent:#7fb0e0;--accent2:#f0944f;--grid:rgba(127,176,224,.08)}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:400 1rem/1.6 var(--body)}
@@ -50,7 +46,10 @@ img.fill,.img img{width:100%;height:100%;object-fit:cover;display:block}
 .corners::after{bottom:-.5rem;right:-.5rem;border-left:0;border-top:0}
 
 /* Banner. To use a photo, replace the .banner-art div with <img class="banner-img" src="..." alt=""> */
-.banner{position:relative;min-height:clamp(19rem,46vw,27rem);display:flex;align-items:flex-end;padding:clamp(1.25rem,4vw,2.5rem);color:#fff;overflow:hidden;border:2px solid var(--ink);margin-bottom:3.5rem;
+.banner{position:relative;width:100vw;margin:-2.5rem 0 3.5rem calc(50% - 50vw);min-height:clamp(22rem,52vw,33rem);display:flex;align-items:flex-end;
+  padding:clamp(1.5rem,4vw,3rem) max(1.25rem,calc(50vw - 34rem + 1.25rem));color:#fff;overflow:hidden;border:0;
+  background:linear-gradient(135deg,#0f2f57,#1a5fb4 60%,#3b8de0)}
+  body{overflow-x:hidden}
   background:linear-gradient(135deg,#1c3550,#2f5d8a 65%,#3f7fb5)}
 .banner::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(10,20,32,.78),rgba(10,20,32,.1) 70%)}
 .banner-art,.banner-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
@@ -353,16 +352,11 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
   // Leave img:"" to show a gray placeholder. Add as many sections and gallery photos as you like.
   var PROJECTS=[
     {
-      id:"one", title:"Slider Exercise", img:"photos/Sharky.jpeg",
-      year:"2026", role:"Assembly & Design",  tools:"Lead screw, Plotter code",
-      summary:"For Electromechanical Design. Designed and assembled a slider mechanism to test lead screw functionality, used plotter code for motion.",
-      sections:[
-        ["Overview","This project involved designing a slider that would take the rotational motion of the lead screw and translate it into linear motion. We also used a plotter code that allowed us to control the speed and direction of the slider."],
-        ["Approach","We designed a slider that attached to the lead screw. This slider was designed to rest against the bottom of the device. This translated all rotational motion to linear motion."],
-        ["Results","We were able to use the plotter code to sucesfully control the slider. We were able to adjust the direction and speed of travel. All rotational motion was converted to linear motion. We also combined our project with another team to make a device with two degrees of freedom, an x-axis and a y-axis."],
-      ],
-      video:"videos/SharkyMove.mp4",
-      gallery:[]   // e.g. ["images/project-one-a.jpg","images/project-one-b.jpg"]
+      id:"three", title:"New England Machine Tools Internship", img:"photos/NEMT.jpg",
+      year:"2026: June-August", role:"Mechanical Engineering Intern", team:"Solo or team size", tools:"Precision CNC Grinding, Autodesk Inventor, Manufacturing, Assembly, Aerospace Components",
+      summary:"Worked as a mechanical engineering intern at New England Machine Tools, where I gained hands-on experience in precision CNC grinding, manufacturing, and assembly of aerospace components. I also utilized Autodesk Inventor for CAD design and analysis.",
+      sections:[["Overview","Text goes here."]],
+      gallery:["photos/interns.png"]
     },
     {
       id:"two", title:"2.5 DOF Project: XYZ Marks the Spot", img:"photos/DOF2.jpeg",
@@ -383,11 +377,16 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
       ]
     },
     {
-      id:"three", title:"Project three", img:"",
-      year:"2026", role:"Your role", team:"Solo or team size", tools:"Tools used",
-      summary:"One sentence summary of the project.",
-      sections:[["Overview","Text goes here."]],
-      gallery:[]
+      id:"one", title:"Slider Exercise", img:"photos/Sharky.jpeg",
+      year:"2026", role:"Assembly & Design",  tools:"Lead screw, Plotter code",
+      summary:"For Electromechanical Design. Designed and assembled a slider mechanism to test lead screw functionality, used plotter code for motion.",
+      sections:[
+        ["Overview","This project involved designing a slider that would take the rotational motion of the lead screw and translate it into linear motion. We also used a plotter code that allowed us to control the speed and direction of the slider."],
+        ["Approach","We designed a slider that attached to the lead screw. This slider was designed to rest against the bottom of the device. This translated all rotational motion to linear motion."],
+        ["Results","We were able to use the plotter code to sucesfully control the slider. We were able to adjust the direction and speed of travel. All rotational motion was converted to linear motion. We also combined our project with another team to make a device with two degrees of freedom, an x-axis and a y-axis."],
+      ],
+      video:"videos/SharkyMove.mp4",
+      gallery:[]   // e.g. ["images/project-one-a.jpg","images/project-one-b.jpg"]
     }
   ];
   var pg=document.getElementById("projectGrid");
