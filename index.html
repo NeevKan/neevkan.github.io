@@ -143,6 +143,19 @@ img.fill,.img img{width:100%;height:100%;object-fit:cover;display:block}
 .skchips{display:flex;gap:.4rem;flex-wrap:wrap}
 .skchips span{border:1px solid var(--line);background:var(--bg);padding:.18rem .65rem;font-size:.9rem;transition:border-color .15s,transform .15s}
 .skchips span:hover{border-color:var(--accent2);transform:translateY(-1px)}
+.pd-photo{width:100%;display:block;border:1px solid var(--line);margin-top:.75rem}
+.sheets{display:grid;gap:1rem;margin-top:.75rem}
+.sheetwin{border:1px solid var(--line);background:var(--surface);min-width:0}
+.sheetbar{display:flex;align-items:center;gap:.6rem;padding:.5rem .8rem;border-bottom:1px solid var(--line);background:var(--bg);font:500 .85rem var(--body)}
+.sheetbar .cname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheetbar a{font:700 .8rem var(--head);text-decoration:none;border:1px solid var(--line);padding:.15rem .6rem;color:var(--ink)}
+.sheetbar a:hover{border-color:var(--accent2)}
+.sheetbar select{font:inherit;padding:.1rem .3rem;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.sheetview{max-height:22rem;overflow:auto}
+.sheetview table{border-collapse:collapse;font-size:.85rem;min-width:100%}
+.sheetview td{border:1px solid var(--line);padding:.25rem .6rem;white-space:nowrap}
+.sheetview tr:first-child td{font-weight:700;background:var(--bg);position:sticky;top:0}
+
 /* Experience */
 .job{display:grid;grid-template-columns:11rem 1fr;gap:1.5rem;padding:1.5rem 0;border-top:1px solid var(--line)}
 .job .when{color:var(--muted);font-size:.9rem}
@@ -337,6 +350,7 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
 (function(){
@@ -348,6 +362,31 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
   // id = short name used in the address (no spaces). Put pictures in an "images" folder.
   // Leave img:"" to show a gray placeholder. Add as many sections and gallery photos as you like.
   var PROJECTS=[
+    {
+      id:"four", title:"Four Bar Linkage", img:"photos/4bar.png",
+      year:"2026", role:"In Class Assignment", team:"Solo or team size", tools:"Solidworks, Solidworks Motion",
+      summary:"Four Bar Linkage Assignment for Electromechanical Design.",
+      sections:[["Determine:","a) The maximum value of the motor torque"],
+                ["", "113Nmm"],
+                ["", "b) The angle of the crank for which the motor torque is maximum in each cycle"],
+                ["", "Theta is at 0 each time the motor torque is at maximum."],
+                ["", "c) The maximum vertical force exerted on Bearing and NewBearing"],
+                ["", "100N."],
+                ["", "d) The minimum motor power required to have to move the Crank at a constant angular speed of 600 rpm."],
+                ["", "P = Tw. .113 x (600 x 2pi/60) = 7.1 Watts"],
+                ["", "e) Explain the meaning of the negative motor torque values and how they are related to the motion of the mechanism links."],
+                ["", "The torque required by the mechanism acts opposite to the defined positive direction of motor rotation. Maybe the gravity is moving with the motor instead of against it. "],
+                ["X Velocity of Extension Midpoint Plot:", "photos/XPlot.png"],
+                ["Y Velocity of Extension Midpoint Plot:", "photos/yplot.png"],
+                ["Motor Torque Plot:", "photos/TorquePlot.png"]
+    ],
+    sheets:[
+          {name:"VelocityX", file:"data/VelocityX.xlsx"},
+          {name:"VelocityY", file:"data/VelocityY.xlsx"},
+          {name:"Motor Torque", file:"data/Torque.xlsx"}
+],
+      gallery:[]
+    },
     {
       id:"three", title:"New England Machine Tools Internship", img:"photos/NEMT.jpg",
       year:"2026: June-August", role:"Mechanical Engineering Intern", team:"Solo or team size", tools:"Precision CNC Grinding, Autodesk Inventor, Manufacturing, Assembly, Aerospace Components",
@@ -428,6 +467,19 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
     })();
   },undefined,function(){el.textContent="Could not load "+url+". Run the page with Live Server.";});
 }
+function initSheet(i,url){
+  var view=document.getElementById("sheet-"+i), sel=document.getElementById("sel-"+i);
+  if(!window.XLSX){view.textContent="The spreadsheet viewer failed to load.";return;}
+  fetch(url).then(function(r){if(!r.ok)throw 0;return r.arrayBuffer();}).then(function(buf){
+    var wb=XLSX.read(buf,{type:"array"});
+    function draw(n){view.innerHTML=XLSX.utils.sheet_to_html(wb.Sheets[n],{header:"",footer:""});}
+    if(wb.SheetNames.length>1){
+      sel.innerHTML='<select>'+wb.SheetNames.map(function(n){return '<option>'+n+'</option>';}).join('')+'</select>';
+      sel.firstChild.onchange=function(){draw(this.value);};
+    }
+    draw(wb.SheetNames[0]);
+  }).catch(function(){view.textContent="Could not load "+url+". Check the file name, or run the page with Live Server.";});
+}
   function renderProject(id){
     var box=document.getElementById("projectDetail");
     var p=PROJECTS.filter(function(x){return x.id===id;})[0];
@@ -436,7 +488,10 @@ footer{max-width:68rem;margin:0 auto;padding:1.25rem;border-top:1px solid var(--
     var html='<a class="back" href="#projects">&larr; All projects</a><h2>'+p.title+'</h2><p class="lede">'+p.summary+'</p>'+
       '<div class="facts"><div><small>Year</small>'+p.year+'</div><div><small>Role</small>'+p.role+'</div>'+
       '<div><small>Tools</small>'+p.tools+'</div></div>'+hero;
-    p.sections.forEach(function(x){html+='<h3>'+x[0]+'</h3><p>'+x[1]+'</p>';});
+    p.sections.forEach(function(x){
+  var isImg=/\.(jpe?g|png|gif|webp)$/i.test(x[1]);
+  html+=(x[0]?'<h3>'+x[0]+'</h3>':'')+(isImg?'<img class="pd-photo" src="'+x[1]+'" alt="'+x[0]+'">':'<p>'+x[1]+'</p>');
+});
     if(p.youtube)html+='<h3>Video</h3><div class="pd-embed"><iframe src="https://www.youtube.com/embed/'+p.youtube+'" title="'+p.title+' video" allowfullscreen loading="lazy"></iframe></div>';
     if(p.video||(p.gallery&&p.gallery.length)){
   html+='<h3>Gallery</h3><div class="gallery">';
@@ -449,13 +504,18 @@ if(p.cad&&p.cad.length){
     return '<div class="cadwin"><div class="codebar"><span class="dots"><i></i><i></i><i></i></span><span class="cname">'+m.name+'</span></div><div class="viewport" id="cad-'+i+'">Loading model...</div><div class="chint">Drag to rotate. Scroll or pinch to zoom.</div></div>';
   }).join('')+'</div>';
 }
-
+if(p.sheets&&p.sheets.length){
+  html+='<h3>Spreadsheets</h3><div class="sheets">'+p.sheets.map(function(s,i){
+    return '<div class="sheetwin"><div class="sheetbar"><span class="cname">'+s.name+'</span><span id="sel-'+i+'"></span><a href="'+s.file+'" download>Download</a></div><div class="sheetview" id="sheet-'+i+'">Loading spreadsheet...</div></div>';
+  }).join('')+'</div>';
+}
     if(p.code&&p.code.length){
   html+='<h3>Code</h3><div class="codes">'+p.code.map(function(c,i){
     return '<div class="codewin"><div class="codebar"><span class="dots"><i></i><i></i><i></i></span><span class="cname">'+c.name+'</span><button class="cbtn" data-i="'+i+'" type="button">Copy</button></div><pre class="code" id="code-'+i+'"></pre></div>';
   }).join('')+'</div>';
 }
 box.innerHTML=html;
+if(p.sheets)p.sheets.forEach(function(s,i){initSheet(i,s.file);});
 if(p.cad)p.cad.forEach(function(m,i){initViewer(document.getElementById("cad-"+i),m.file,m.color);});
 if(p.code)p.code.forEach(function(c,i){
   var el=document.getElementById("code-"+i);
